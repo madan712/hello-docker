@@ -27,6 +27,11 @@ Check logs
 docker logs -f hello-docker
 ```
 
+Look inside container shell
+```
+docker exec -it hello-docker /bin/sh
+```
+
 Stop the container
 ```
 docker-compose down
