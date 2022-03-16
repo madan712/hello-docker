@@ -1,6 +1,8 @@
 # hello-docker
 A simple docker example using springboot and mysql
 
+Some usefull docker commands
+
 Create local image
 ```
 cd hello-docker
@@ -20,6 +22,11 @@ docker tag hello-docker madan712/hello-docker:v1.0
 Run the container
 ```
 docker-compose up -d
+```
+
+Check running containers
+```
+docker ps -a
 ```
 
 Check logs
