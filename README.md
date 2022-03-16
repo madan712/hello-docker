@@ -24,7 +24,7 @@ Run the container
 docker-compose up -d
 ```
 
-Check running containers
+Check all running containers
 ```
 docker ps -a
 ```
