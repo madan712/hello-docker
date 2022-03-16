@@ -37,7 +37,7 @@ Stop the container
 docker-compose down
 ```
 
-Optional - Push local image to docker hub to share with the world
+Optional - Push local image to docker hub
 ```
 docker push madan712/hello-docker:v1.0 
 ```
