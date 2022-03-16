@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  mysqldb:
+    image: mysql
+    container_name: mysql
+    platform: linux/amd64
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=pass123
+      - MYSQL_DATABASE=mydb
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - mynet
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - 8081:8080
+    networks:
+      - mynet
+
+  hello-docker:
+    depends_on:
+      - mysqldb
+    image: madan712/hello-docker:v1.0
+    container_name: hello-docker
+    restart: on-failure
+    ports:
+      - 8080:8080
+    networks:
+      - mynet
+
+volumes:
+  mysql-data:
+
+networks:
+  mynet:
