@@ -1,7 +1,6 @@
 # hello-docker
 A simple docker example using springboot and mysql
 
-Some usefull docker commands
 
 Create local image
 ```
@@ -34,7 +33,7 @@ Check logs
 docker logs -f hello-docker
 ```
 
-Look inside container shell
+Get into container shell
 ```
 docker exec -it hello-docker /bin/sh
 ```
