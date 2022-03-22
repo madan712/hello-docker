@@ -2,7 +2,7 @@ version: '3'
 
 services:
   mysqldb:
-    image: mysql
+    image: mariadb
     container_name: mysql
     # platform: linux/amd64 # enable this for linux/mac
     restart: always
