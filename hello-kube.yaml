@@ -40,6 +40,24 @@ spec:
   selector:
     app: mysql
 
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config
+data:
+  MY_SCHEMA: mydb
+  SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/mydb?allowPublicKeyRetrieval=true&useSSL=false
+  SPRING_DATASOURCE_USERNAME: root
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret
+type: Opaque
+data:
+  ROOT_PASSWORD: cGFzczEyMw==
 
 ---
 apiVersion: apps/v1
@@ -64,11 +82,16 @@ spec:
       - image: mariadb
         name: mysql
         env:
-          # Use secret in real usage
         - name: MYSQL_ROOT_PASSWORD
-          value: pass123
+          valueFrom:
+            secretKeyRef:
+              name: my-secret
+              key: ROOT_PASSWORD
         - name: MYSQL_DATABASE
-          value: mydb
+          valueFrom:
+            configMapKeyRef:
+              name: my-config
+              key: MY_SCHEMA
         ports:
         - containerPort: 3306
           name: mysql
@@ -100,12 +123,27 @@ spec:
         app: hello-docker
     spec:
       containers:
-      - image: madan712/hello-docker:v1.0
+      - image: madan712/hello-docker:v3.0
         name: hello-docker
         ports:
         - containerPort: 8080
           name: hello-docker
-
+        env:
+          - name: SPRING_DATASOURCE_URL
+            valueFrom:
+              configMapKeyRef:
+                name: my-config
+                key: SPRING_DATASOURCE_URL
+          - name: SPRING_DATASOURCE_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: my-config
+                key: SPRING_DATASOURCE_USERNAME
+          - name: SPRING_DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: ROOT_PASSWORD
 ---
 apiVersion: v1
 kind: Service
@@ -132,7 +170,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: madan.com
+    - host: myhost.com
       http:
         paths:
           - path: /

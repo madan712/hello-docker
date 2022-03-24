@@ -4,7 +4,7 @@ services:
   mysqldb:
     image: mariadb
     container_name: mysql
-    # platform: linux/amd64 # enable this for linux/mac
+    platform: linux/amd64 # enable this for linux/mac
     restart: always
     ports:
       - 3306:3306
@@ -28,11 +28,17 @@ services:
   hello-docker:
     depends_on:
       - mysqldb
-    image: madan712/hello-docker:v1.0
+    image: madan712/hello-docker:v3.0
     container_name: hello-docker
     restart: on-failure
     ports:
       - 8080:8080
+    environment:
+      SPRING_APPLICATION_JSON: '{
+          "spring.datasource.url": "jdbc:mysql://mysqldb:3306/mydb?allowPublicKeyRetrieval=true&useSSL=false",
+          "spring.datasource.username":"root",
+          "spring.datasource.password":"pass123"
+        }'
     networks:
       - mynet
 
