@@ -1,0 +1,35 @@
+version: '3.4'
+
+x-aws-vpc: "vpc-09cf6282f54de906f"
+
+services:
+  mysqldb:
+    image: mariadb
+    container_name: mysql
+    restart: always
+    ports:
+      - 3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=pass123
+      - MYSQL_DATABASE=mydb
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - mynet
+
+  hello-docker:
+    depends_on:
+      - mysqldb
+    image: 695663959248.dkr.ecr.us-east-1.amazonaws.com/hello-docker:v5.0
+    container_name: hello-docker
+    restart: on-failure
+    ports:
+      - 8080
+    networks:
+      - mynet
+
+volumes:
+  mysql-data:
+
+networks:
+  mynet:
