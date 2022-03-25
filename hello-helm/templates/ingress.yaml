@@ -2,21 +2,21 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: my-ingress
+  name: {{ .Release.Name }}-ingress
   labels:
-    app: my-ingress
+    {{- include "app.labels" . | nindent 4 }}
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: myhost.com
+    - host: myhost.{{ .Release.Name }}.com
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: {{ include "hello-helm.fullname" . }}
+                name: {{ .Release.Name }}-app-service
                 port:
-                  number: 8081
+                  number: 80
