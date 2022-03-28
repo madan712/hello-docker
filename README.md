@@ -212,3 +212,36 @@ Update `/etc/hosts` file with
 127.0.0.1   myhost.com
 ```
 
+Delete all resources by file names
+```
+kubectl delete -f hello-kube.yaml
+
+```
+
+## Helm
+Helm is a package manager for Kubernetes applications - https://helm.sh/
+
+Create a new helm chart with a given name
+```
+helm create hello-helm
+```
+
+Test a chart for possible issues
+```
+helm lint ./hello-helm
+```
+
+View helm template 
+```
+helm template ./hello-helm 
+```
+
+Install the chart into Kubernetes cluster
+```
+helm install hello-helm ./hello-helm
+```
+
+Uninstall the chart
+```
+helm uninstall hello-helm
+```
