@@ -160,3 +160,55 @@ docker compose -f aws-docker-compose.yaml up
 ```
 
 ## kubernetes
+
+### Run [minikube](https://minikube.sigs.k8s.io/docs/start/) locally
+
+To start a local Kubernetes cluster
+```
+minikube start
+```
+
+Access the Kubernetes dashboard running within the minikube cluster
+```
+minikube dashboard
+```
+
+Connect to LoadBalancer services
+```
+minikube tunnel
+```
+
+Apply Kubernetes configuration using [kubectl](https://kubernetes.io/docs/tasks/tools/)
+```
+kubectl apply -f hello-kube.yaml 
+```
+
+Check running pods
+```
+kubectl get pods
+```
+
+Check running services
+```
+kubectl get services
+```
+
+To run ingress locally you would need to install a controller like - [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/)
+```
+helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace
+```
+
+Check ingress
+```
+kubectl get ingress
+NAME         CLASS    HOSTS        ADDRESS     PORTS   AGE
+my-ingress   <none>   myhost.com   127.0.0.1   80      66s
+```
+
+Update `/etc/hosts` file with
+```
+127.0.0.1   myhost.com
+```
+
