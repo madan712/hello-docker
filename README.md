@@ -67,7 +67,7 @@ docker stop hello-docker
 
 Remove the stopped process
 ```
-docker rm mysqldb
+docker rm hello-docker
 ```
 
 Delete an image
@@ -128,7 +128,7 @@ Push image to the ECR repository
 docker push 695663959248.dkr.ecr.us-east-1.amazonaws.com/hello-docker:v1.0
 ```
 
-List images in ECR 
+List images in ECR repository
 ```
 aws ecr list-images --repository-name hello-docker
 ```
@@ -138,9 +138,25 @@ Delete image from ECR
 aws ecr batch-delete-image --repository-name hello-docker --image-ids imageTag=v2.0
 ```
 
-Delete repository
+Delete ECR repository
 ```
 aws ecr delete-repository --repository-name test --force
+```
+
+**Docker ECS** context is required to run docker compose in AWS
+```
+docker context create ecs myecscontext
+```
+
+List all docker context
+```
+docker context ls
+docker context use myecscontext
+```
+
+Run docker compose in AWS (Note - docker compose as two different words unlike docker-compose)
+```
+docker compose -f aws-docker-compose.yaml up
 ```
 
 ## kubernetes
