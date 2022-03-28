@@ -1,5 +1,5 @@
 ## Docker
-A simple docker example using springboot and database as mysql/mariadb
+A simple docker example using springboot and database as mysql/mariadb. It also includes steps to deploy it in AWS
 
 
 Create local image
@@ -19,8 +19,7 @@ docker tag hello-docker madan712/hello-docker:v1.0
 ```
 
 ### Run individual container(s) in a docker network
-Since springboot application need to connect to database, both the containers should be present in same docker network
-Note - If user doesn't provide network explicitly docker will run container in repective default network
+Since springboot application need to connect to database, both the containers should be present in same docker network. Note - If user doesn't provide network explicitly docker will run container in repective default network
 ```
 docker network create mynetwork
 ```
@@ -51,14 +50,29 @@ docker run -d --name hello-docker -p 8080:8080 \
 madan712/hello-docker:v1.0
 ```
 
+Check all running containers
+```
+docker ps -a
+```
+
 Check logs
 ```
 docker logs -f hello-docker
 ```
 
-Check all running containers
+Stop running process
 ```
-docker ps -a
+docker stop hello-docker
+```
+
+Remove the stopped process
+```
+docker rm mysqldb
+```
+
+Delete an image
+```
+docker rmi hello-docker
 ```
 
 ### For multi-container docker application, better option is to use docker compose
@@ -85,6 +99,48 @@ docker-compose down
 Optional - Push local image to docker hub
 ```
 docker push madan712/hello-docker:v1.0 
+```
+
+### AWS steps
+
+Create build for ECR
+```
+docker buildx build --platform=linux/arm64 -t 695663959248.dkr.ecr.us-east-1.amazonaws.com/hello-docker .
+```
+
+Create tag for ECR
+```
+docker tag 695663959248.dkr.ecr.us-east-1.amazonaws.com/hello-docker 695663959248.dkr.ecr.us-east-1.amazonaws.com/hello-docker:v1.0
+```
+
+Login to AWS (Dont forget to update aws_access_key_id and aws_secret_access_key in ~/.aws/credentials)
+```
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 695663959248.dkr.ecr.us-east-1.amazonaws.com
+```
+
+Create private ECR repository
+```
+aws ecr create-repository --repository-name hello-docker
+```
+
+Push image to the ECR repository
+```
+docker push 695663959248.dkr.ecr.us-east-1.amazonaws.com/hello-docker:v1.0
+```
+
+List images in ECR 
+```
+aws ecr list-images --repository-name hello-docker
+```
+
+Delete image from ECR
+```
+aws ecr batch-delete-image --repository-name hello-docker --image-ids imageTag=v2.0
+```
+
+Delete repository
+```
+aws ecr delete-repository --repository-name test --force
 ```
 
 ## kubernetes
