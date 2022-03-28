@@ -101,7 +101,7 @@ Optional - Push local image to docker hub
 docker push madan712/hello-docker:v1.0 
 ```
 
-### AWS steps
+### Deploy docker application to AWS Elastic container service
 
 Create build for ECR
 ```
@@ -249,4 +249,58 @@ helm list -a
 Uninstall the chart
 ```
 helm uninstall hello-helm
+```
+
+## Deploy helm chart to AWS Elastic kubernetes service
+
+Create EKS cluster
+```
+eksctl create cluster --name mycluster --node-type t2.large --nodes 3 --nodes-min 3 --nodes-max 5 --region us-east-1 --zones us-east-1a,us-east-1b,us-east-1c,us-east-1d,us-east-1f
+```
+
+### Install [AWS Load Balancer Controller](https://artifacthub.io/packages/helm/aws/aws-load-balancer-controller)
+Create IAM OIDC provider
+```
+eksctl utils associate-iam-oidc-provider \
+    --region <aws-region> \
+    --cluster <your-cluster-name> \
+    --approve
+```
+
+Create an IAM policy called AWSLoadBalancerControllerIAMPolicy
+```
+curl -o iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
+aws iam create-policy \
+    --policy-name AWSLoadBalancerControllerIAMPolicy \
+    --policy-document file://iam-policy.json
+```
+
+Create a IAM role and ServiceAccount for the Load Balancer controller, use the ARN from the step above
+```
+eksctl create iamserviceaccount \
+--cluster=<cluster-name> \
+--namespace=kube-system \
+--name=aws-load-balancer-controller \
+--attach-policy-arn=arn:aws:iam::<AWS_ACCOUNT_ID>:policy/AWSLoadBalancerControllerIAMPolicy \
+--approve
+```
+
+Add the EKS repository to Helm
+```
+helm repo add eks https://aws.github.io/eks-charts
+```
+
+Install the TargetGroupBinding CRDs
+```
+kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller//crds?ref=master"
+```
+
+Install the AWS Load Balancer controller
+```
+helm upgrade -i aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=<k8s-cluster-name> --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller
+```
+
+Install helm chat with aws specific values
+```
+helm install hello-helm -f aws-values.yaml ./hello-helm
 ```
