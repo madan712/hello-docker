@@ -304,3 +304,11 @@ Install helm chat with aws specific values
 ```
 helm install hello-helm -f aws-values.yaml ./hello-helm
 ```
+
+NOTE - remow host and change below annotations in ingress.yaml to run the helm chat in AWS EKS
+```
+annotations:
+  kubernetes.io/ingress.class: alb
+  alb.ingress.kubernetes.io/scheme: internet-facing
+  alb.ingress.kubernetes.io/target-type: ip
+```
