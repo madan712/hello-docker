@@ -241,6 +241,11 @@ Install the chart into Kubernetes cluster
 helm install hello-helm ./hello-helm
 ```
 
+List all installed helm charts
+```
+helm list -a
+```
+
 Uninstall the chart
 ```
 helm uninstall hello-helm
