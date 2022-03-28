@@ -236,7 +236,7 @@ View helm template
 helm template ./hello-helm 
 ```
 
-Install the chart into Kubernetes cluster
+Install the chart into Kubernetes cluster, gets default values from values.yaml
 ```
 helm install hello-helm ./hello-helm
 ```
