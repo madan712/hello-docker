@@ -3,11 +3,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Release.Name }}-db-service
+  namespace: {{ .Values.namespace }}
   labels:
     {{- include "db.labels" . | nindent 4 }}
 spec:
   ports:
     - port: 3306
+      targetPort: 3306
   selector:
     {{- include "db.selectorLabels" . | nindent 4 }}
 
@@ -16,6 +18,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Release.Name }}-app-service
+  namespace: {{ .Values.namespace }}
   labels:
     {{- include "app.labels" . | nindent 4 }}
 spec:

@@ -1,35 +1,42 @@
 version: '3.4'
 
-x-aws-vpc: "vpc-09cf6282f54de906f"
+x-aws-vpc: "vpc-0d675b14f76242bb5"
 
 services:
   mysqldb:
     image: mariadb
     container_name: mysql
+    platform: linux/arm64 # enable this for linux/mac
     restart: always
     ports:
-      - 3306
+      - 3306:3306
     environment:
       - MYSQL_ROOT_PASSWORD=pass123
       - MYSQL_DATABASE=mydb
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
-      - mynet
+      - mynetwork
 
   hello-docker:
     depends_on:
       - mysqldb
-    image: 695663959248.dkr.ecr.us-east-1.amazonaws.com/hello-docker:v5.0
+    image: 695663959248.dkr.ecr.us-east-1.amazonaws.com/hello-docker:v1.0
     container_name: hello-docker
     restart: on-failure
     ports:
-      - 8080
+      - 8080:8080
+    environment:
+      SPRING_APPLICATION_JSON: '{
+          "spring.datasource.url": "jdbc:mysql://mysqldb:3306/mydb?useSSL=false",
+          "spring.datasource.username":"root",
+          "spring.datasource.password":"pass123"
+        }'
     networks:
-      - mynet
+      - mynetwork
 
 volumes:
   mysql-data:
 
 networks:
-  mynet:
+  mynetwork:

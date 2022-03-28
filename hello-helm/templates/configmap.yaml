@@ -3,7 +3,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-config
+  namespace: {{ .Values.namespace }}
 data:
   MY_SCHEMA: mydb
-  SPRING_DATASOURCE_URL: jdbc:mysql://{{ .Release.Name }}-db-service:3306/mydb?allowPublicKeyRetrieval=true&useSSL=false
+  SPRING_DATASOURCE_URL: jdbc:mysql://{{ .Release.Name }}-db-service/mydb?allowPublicKeyRetrieval=true&useSSL=false
   SPRING_DATASOURCE_USERNAME: root

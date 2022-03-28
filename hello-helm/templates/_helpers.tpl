@@ -5,9 +5,8 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
-
 {{/*
-My app
+My app properties
 */}}
 {{- define "app.name" -}}
 {{- printf "%s-app" .Release.Name }}
@@ -33,9 +32,8 @@ app.kubernetes.io/name: {{ include "app.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-
 {{/*
-My database
+My database metadata
 */}}
 {{- define "db.name" -}}
 {{- printf "%s-db" .Release.Name }}

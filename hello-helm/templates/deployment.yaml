@@ -1,37 +1,9 @@
 ---
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: {{ .Release.Name }}-pv-volume
-  labels:
-    type: local
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 20Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/mnt/data"
-
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ .Release.Name }}-pv-claim
-spec:
-  storageClassName: manual
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
-
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "db.name" . }}
+  namespace: {{ .Values.namespace }}
   labels:
     {{- include "db.labels" . | nindent 4 }}
 spec:
@@ -48,7 +20,8 @@ spec:
     spec:
       containers:
         - image: mariadb
-          name: mysql
+          name: mydbcontainer
+          imagePullPolicy: IfNotPresent
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
@@ -76,6 +49,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "app.name" . }}
+  namespace: {{ .Values.namespace }}
   labels:
     {{- include "app.labels" . | nindent 4 }}
 spec:
@@ -92,10 +66,10 @@ spec:
     spec:
       containers:
       - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        name: {{ .Chart.Name }}
+        name: myappcontainer
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
-          name: http
         env:
           - name: SPRING_DATASOURCE_URL
             valueFrom:
