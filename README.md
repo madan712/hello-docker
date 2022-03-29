@@ -188,6 +188,11 @@ Check running pods
 kubectl get pods
 ```
 
+Get into container (pod)
+```
+kubectl exec --stdin --tty [pod-name] -- /bin/sh
+```
+
 Check running services
 ```
 kubectl get services
