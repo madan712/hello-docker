@@ -6,6 +6,10 @@ Create local image
 ```
 cd hello-docker
 docker build --tag hello-docker .
+
+OR
+
+docker build --platform=linux/amd64 --tag hello-docker .
 ```
 
 Check generated image
