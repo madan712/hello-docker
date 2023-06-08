@@ -172,9 +172,14 @@ To start a local Kubernetes cluster
 minikube start
 ```
 
-Access the Kubernetes dashboard running within the minikube cluster
+Access the Kubernetes dashboard running within the minikube cluster [details](https://kubernetes.github.io/ingress-nginx/deploy/#minikube)
 ```
 minikube dashboard
+```
+
+The ingress controller can be installed through minikube's addons system:
+```
+minikube addons enable ingress
 ```
 
 Connect to LoadBalancer services
